@@ -58,17 +58,20 @@ class PostCrudController extends CrudController
         CRUD::addColumn([
             'name' => 'description', 
             'label' => "Descripción",
-            'type' => 'Text'
+            'type' => 'Text',
+            'escaped' => false
         ]); 
         
         $this->crud->addFilter([
             'type'  => 'text',
-            'name'  => 'user_id',
+            'name'  => 'name',
             'label' => 'Usuario'
         ], 
         false,
         function($value) { 
-            $this->crud->addClause('where', 'user.name', 'LIKE', "%$value%");
+            $this->crud->addClause('join', 'users', function($query) use ($value) {
+                $query->on('users.id','=','posts.user_id')->where('users.name', 'LIKE', "%$value%");
+            });
         });
 
         $this->crud->addFilter([
@@ -94,6 +97,32 @@ class PostCrudController extends CrudController
       
     }
 
+    protected function setupShowOperation()
+    {
+        $this->crud->set('show.setFromDb', false);
+
+        if(backpack_auth()->user()->role == 1){
+            $this->crud->addColumn([
+                'name' => 'user.name',
+                'label' => 'Usuario',
+                'type' => 'text',
+            ]);
+        }
+
+        $this->crud->addColumn([
+            'name' => 'title',
+            'label' => 'Título',
+            'type' => 'text',
+        ]);
+
+        $this->crud->addColumn([
+            'name' => 'description',
+            'label' => 'Descripción',
+            'type' => 'text',
+            'escaped' => false,
+        ]);
+    }
+
     /**
      * Define what happens when the Create operation is loaded.
      * 
@@ -110,18 +139,15 @@ class PostCrudController extends CrudController
             'label' => "Usuario",
             'type' => 'select',
             'name' => 'user_id', 
+            'options' => (function ($query) {
+                return $query->where('id', '<>', backpack_auth()->user()->id)->get();
+            })
         ]); 
         }else{
             CRUD::addField([
-                'label' => "Usuario",
-                'type' => 'select',
+                'type' => 'hidden',
                 'name' => 'user_id', 
-                'attributes' => [
-                    'readonly'  => 'readonly',
-                ],
-                'options'   => (function ($query) {
-                    return $query->where('id', backpack_auth()->user()->id)->get();
-                })
+                'value' => backpack_auth()->user()->id
             ]); 
         }      
         
