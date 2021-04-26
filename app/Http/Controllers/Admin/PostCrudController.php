@@ -18,6 +18,8 @@ class PostCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\CloneOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\BulkCloneOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -34,6 +36,8 @@ class PostCrudController extends CrudController
         if(backpack_auth()->user()->role == 2){
             $this->crud->addClause('where','user_id',backpack_auth()->user()->id);
         }
+
+        $this->crud->enableExportButtons();
 
     }
 

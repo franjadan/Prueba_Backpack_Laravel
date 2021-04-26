@@ -36,6 +36,9 @@ class UserCrudController extends CrudController
         CRUD::setEntityNameStrings('user', 'users');
 
         $this->crud->addClause('where','id', '<>', backpack_auth()->user()->id);
+
+        $this->crud->enableExportButtons();
+
     }
 
 
