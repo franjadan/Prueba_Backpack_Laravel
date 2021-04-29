@@ -5,18 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Post extends Model
+class Comment extends Model
 {
     use \Backpack\CRUD\app\Models\Traits\CrudTrait;
     use HasFactory;
 
-    /**
+     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'user_id',
+        'post_id',
         'title',
         'description',
     ];
@@ -40,18 +40,14 @@ class Post extends Model
         
     ];
 
-    public function user()
+    public function post()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Post::class);
     }
 
-    public function comments()
+    public function back($crud = false)
     {
-        return $this->hasMany(Comment::class);
-    }
-
-    public function openComments($crud = false)
-    {
-        return '<a class="btn btn-sm btn-link" href="' . url('admin/comment/post/'.$this->getKey()) . '" title="Ver comentarios"><i class="las la-comments"></i> Ver comentarios</a>';
+        return '<a class="btn btn-sm btn-link" href="' . url('admin/post/') . '" title="Volver"><i class="las la-angle-left"></i>Volver a los posts</a>';
     }
 }
+

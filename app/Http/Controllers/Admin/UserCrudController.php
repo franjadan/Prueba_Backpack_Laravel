@@ -36,7 +36,6 @@ class UserCrudController extends CrudController
         CRUD::setEntityNameStrings('user', 'users');
 
         $this->crud->addClause('where','id', '<>', backpack_auth()->user()->id);
-
         $this->crud->enableExportButtons();
 
     }
@@ -65,6 +64,13 @@ class UserCrudController extends CrudController
             'label'   => 'Rol',
             'type'    => 'select_from_array',
             'options' => [1 => 'Administrador', 2 => 'Usuario']
+        ]);
+
+        CRUD::addColumn([
+            'name' => 'posts',
+            'type' => 'relationship_count', 
+            'label'=> 'Posts',   
+            'suffix' => ' publicaciones'
         ]);
 
         /**

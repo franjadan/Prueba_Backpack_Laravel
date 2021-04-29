@@ -65,6 +65,16 @@ class PostCrudController extends CrudController
             'type' => 'Text',
             'escaped' => false
         ]); 
+
+        CRUD::addColumn([
+            'name' => 'comments',
+            'type' => 'relationship_count', 
+            'label'=> 'Comentarios',   
+            'suffix' => ' comentarios',
+            'link' => function($entry) {
+                return backpack_url('comment');
+            }
+        ]);
         
         $this->crud->addFilter([
             'type'  => 'text',
@@ -97,6 +107,8 @@ class PostCrudController extends CrudController
         function($value) { 
             $this->crud->addClause('where', 'title', 'LIKE', "%$value%");
         });
+
+        $this->crud->addButtonFromModelFunction('line', 'post', 'openComments', 'beginning');
 
       
     }
