@@ -13,8 +13,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return redirect('/admin');
+Route::get('/', function(){
+    return view('posts.index');
 });
+
+Route::get('/posts', 'App\Http\Controllers\PostController@getPosts');
+
+Route::get('/post/{post}/ver', function(\App\Models\Post $post){
+    return view('posts.show', [
+        'post' => $post,
+    ]);
+});
+
+Route::get('/post/{id}', 'App\Http\Controllers\PostController@getPost');
+
+Route::get('/comentarios/{id}', 'App\Http\Controllers\CommentController@getComments');
 
 Auth::routes();
