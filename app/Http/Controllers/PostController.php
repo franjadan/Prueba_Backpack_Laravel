@@ -9,7 +9,7 @@ class PostController extends Controller
 {
     public function getPosts(){
 
-        $posts = Post::paginate(3);
+        $posts = Post::paginate(5);
 
         return response()->json($posts);
     }

@@ -9,7 +9,7 @@ class CommentController extends Controller
 {
     public function getComments($id){
 
-        $comments = Comment::where('post_id', $id)->paginate(3);
+        $comments = Comment::where('post_id', $id)->paginate(5);
 
         return response()->json($comments);
     }
