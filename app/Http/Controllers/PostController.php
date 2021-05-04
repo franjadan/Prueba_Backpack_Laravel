@@ -9,9 +9,9 @@ class PostController extends Controller
 {
     public function getPosts(){
 
-        $posts = Post::paginate(10);
+        $posts = Post::paginate(3);
 
-        return $posts;
+        return response()->json($posts);
     }
 
     public function getPost($id){

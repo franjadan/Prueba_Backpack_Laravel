@@ -8,10 +8,10 @@
                     <a :href="'/post/' + post.id + '/ver'">Leer más</a>
                 </div>
             </div>
-        </div>
 
-        <div class="d-flex flex-row justify-content-center list-group">
-            <button v-for="page in pagination.last_page" :key="page" @click="doPagination(page)" class="btn btn-white my-2 mx-2 list-group-item">{{ page }}</button>
+            <div class="mx-2 my-2 col-md-6">
+                <pagination :data="laravelData" @pagination-change-page="fetchPosts"></pagination>
+            </div>
         </div>
     </div>
 </template>
@@ -21,7 +21,7 @@
         data() {
             return {
                 posts: [],
-                pagination: {},
+                laravelData : {},
             }
         },
 
@@ -42,25 +42,23 @@
         },
 
         methods: {
-            fetchPosts() {
-                    axios.get('/posts')
-                        .then(response => {
-                            this.posts = response.data.data;
-                            this.makePagination({ ...response.data.meta, ...response.data.links });
-                            console.log(this.posts);
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        });
+            fetchPosts(page) {
+
+                if (typeof page === 'undefined') {
+                    page = 1;
+                }
+
+                axios.get('/posts?page=' + page)
+                    .then(response => {
+                        this.posts = response.data.data;
+                        this.laravelData = response.data;
+                        console.log(this.posts);
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
             },
 
-            makePagination(data) {
-                this.pagination = data;
-            },
-
-            doPagination(page) {
-                this.fetchPosts(`${this.endpoint}?page=${page}`)
-            }
         }
     }
 </script>

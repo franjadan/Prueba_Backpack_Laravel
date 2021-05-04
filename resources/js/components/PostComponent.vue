@@ -12,8 +12,21 @@
                 <div class="card-body">
                     <p class="card-title"><small>{{ comment.created_at }}</small></p>
                     <p v-html="comment.comment" class="card-text">{{ comment.comment }}</p>
-                    
                 </div>
+            </div>
+
+            <div class="mx-2 my-2 col-md-6">
+                <pagination :data="laravelData" @pagination-change-page="fetchComments"></pagination>
+            </div>
+
+            <div class="submit-form mx-2 my-2 col-md-6">
+                <div class="form-group">
+                    <label for="comment">Comentario</label>
+                    <textarea class="form-control" id="comment" name="comment" rows="5" v-model="fields.comment"></textarea>
+                    <div v-if="errors && errors.name" class="text-danger">{{ errors.name[0] }}</div>
+                </div>
+
+                <button @click="saveComment" class="btn btn-success">Publicar comentario</button>
             </div>
         </div>
     </div>
@@ -25,7 +38,13 @@
         data() {
             return {
                 post: {},
-                comments: {},
+                comments: [],
+                laravelData : {},
+                fields: {
+                    comment: ''
+                },
+                errors: {},
+                
             }
         },
 
@@ -65,16 +84,36 @@
                 });
             },
 
-            fetchComments() {
-                axios.get('/comentarios/' + this.$props.id)
+            fetchComments(page) {
+
+                if (typeof page === 'undefined') {
+                    page = 1;
+                }
+
+                axios.get('/post/' + this.$props.id + '/comentarios?page=' + page)
                     .then(response => {
                         this.comments = response.data.data;
+                        this.laravelData = response.data;
                         console.log("Comentarios: " + this.comments);
                     })
                     .catch(err => {
                         console.log(err);
                 });
             },
+
+            saveComment(){
+
+                axios.post('/post/' + this.$props.id + '/comentarios/nuevo', this.fields)
+                    .then(response => {
+                        alert("OK");
+                        this.fetchComments();
+                    })
+                    .catch(err => {
+                         this.errors = error.response.data.errors || {};
+                    })
+                
+            
+            }
         }
     }
 </script>

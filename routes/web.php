@@ -27,6 +27,9 @@ Route::get('/post/{post}/ver', function(\App\Models\Post $post){
 
 Route::get('/post/{id}', 'App\Http\Controllers\PostController@getPost');
 
-Route::get('/comentarios/{id}', 'App\Http\Controllers\CommentController@getComments');
+Route::get('/post/{id}/comentarios', 'App\Http\Controllers\CommentController@getComments');
+
+Route::post('/post/{id}/comentarios/nuevo', 'App\Http\Controllers\CommentController@saveComment');
+
 
 Auth::routes();
